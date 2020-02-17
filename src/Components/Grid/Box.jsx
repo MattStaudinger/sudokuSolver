@@ -1,15 +1,39 @@
 import React, { Component } from 'react'
+import InputBase from '@material-ui/core/InputBase';
+
 import Paper from '@material-ui/core/Paper';
 import {
     withStyles,
+     MuiThemeProvider, 
+     createMuiTheme
 } from "@material-ui/core/styles";
+
+
+const theme = createMuiTheme({
+  overrides: {
+    MuiInputBase: {
+
+      root: {
+        height: "100%",
+        cursor: "auto"
+      },
+      input: {
+        textAlign: "center",
+        fontSize: "2em",
+        color: "white"
+      },
+    },
+  },
+});
+
+
 
 const styles = theme => ({
   paper: {
     height: 70,
     width: 70,
     "&:hover": {
-					backgroundColor: "white !important",
+					opacity: "0.6",
 			}   
   },
 });
@@ -18,13 +42,20 @@ class Box extends Component {
   render() {
     const {classes, backgroundColor} = this.props
     return (
-          
-      <Paper className={classes.paper} style={{"backgroundColor": backgroundColor}}
+    <MuiThemeProvider theme={theme}>
 
-      
+
+      <Paper 
+        className={classes.paper} 
+        style={{"backgroundColor": backgroundColor}}      
       >
+
+        <InputBase>       
+        
+        </InputBase>
         
       </Paper>
+    </MuiThemeProvider>
     )
   }
 }
