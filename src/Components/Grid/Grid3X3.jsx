@@ -7,8 +7,9 @@ const styles = theme => ({
 
 });
 class Grid3X3 extends Component {
+
   render() {
-    const {backgroundColor} = this.props
+    const {backgroundColor, handleInputChange, BoxNumber} = this.props
     return (
       <React.Fragment>
         <Grid container spacing={2} justify= "center">
@@ -16,6 +17,8 @@ class Grid3X3 extends Component {
             <Grid key={value} item>
               <Box 
                 backgroundColor = {backgroundColor}
+                inputName = {`${BoxNumber}-0-${value}`}
+                handleInputChange = {handleInputChange}
               />
             </Grid>
           ))}
@@ -26,6 +29,8 @@ class Grid3X3 extends Component {
             <Grid key={value} item>
               <Box 
                 backgroundColor = {backgroundColor}
+                inputName = {`${BoxNumber}-1-${value}`}
+                handleInputChange = {handleInputChange}
               />
             </Grid>
           ))}
@@ -36,6 +41,8 @@ class Grid3X3 extends Component {
             <Grid key={value} item>
               <Box 
                 backgroundColor = {backgroundColor}
+                inputName = {`${BoxNumber}-2-${value}`}
+                handleInputChange = {handleInputChange}
               />
             </Grid>
           ))}

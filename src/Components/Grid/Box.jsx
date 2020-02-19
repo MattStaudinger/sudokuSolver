@@ -20,7 +20,7 @@ const theme = createMuiTheme({
       input: {
         textAlign: "center",
         fontSize: "2em",
-        color: "white"
+        color: "#0000006e",
       },
     },
   },
@@ -40,7 +40,7 @@ const styles = theme => ({
 
 class Box extends Component {
   render() {
-    const {classes, backgroundColor} = this.props
+    const {classes, backgroundColor, handleInputChange, inputName} = this.props
     return (
     <MuiThemeProvider theme={theme}>
 
@@ -50,7 +50,10 @@ class Box extends Component {
         style={{"backgroundColor": backgroundColor}}      
       >
 
-        <InputBase>       
+        <InputBase
+          onChange={handleInputChange}
+          name = {inputName}
+        >       
         
         </InputBase>
         
