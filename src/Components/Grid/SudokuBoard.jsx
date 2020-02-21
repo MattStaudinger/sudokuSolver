@@ -18,8 +18,38 @@ class SudokuBoard extends Component {
     super(props)
   
     this.state = {
-       
+       sudokuBoard: null
+
     }
+  }
+
+  componentDidMount() {
+    
+    const sudokuBoard = this.generateSudokuStates()
+    this.setState({
+      sudokuBoard
+    })
+  }
+
+
+
+  generateSudokuStates = () => {
+
+    let sudokuBoard = {}
+
+    for (let x = 1; x <= 9; x++) {
+      for (let y = 1; y <= 9; y++) {
+        sudokuBoard[`p${x}_${y}`] = 0
+      }
+    }
+
+    console.log(sudokuBoard, "sudokuBoard")
+
+    return sudokuBoard;
+          
+
+
+
   }
 
   generateBackgroundColorValues = () => {
@@ -77,10 +107,13 @@ class SudokuBoard extends Component {
   
     }
   }
+
+
   
   
-  encodePositionToCoordinates = (positionRAW) => {
+  translateRAWPositionToCoordinates = (positionRAW) => {
     try {
+
 
       const positionSplit = positionRAW.split("-");
 
@@ -90,38 +123,63 @@ class SudokuBoard extends Component {
       
       const cordX = this.getXCoordinate(grid, box)
       const cordY = this.getYCoordinate(grid, row)
-      return [cordX, cordY]
 
-
+      return {cordX, cordY};
     }
     catch (err) {
       console.log(err)
       alert(err.message)
     }
   }
+
+  getInputNameBasedOnCoordinate = (positionRAW) => {
+
+    const {cordX, cordY} = this.translateRAWPositionToCoordinates(positionRAW)
+    const inputName = `p${cordX}_${cordY}`;
+    console.log(inputName, "inputName")
+    return inputName;
+  }
   
 
   handleInputChange = (event) => {
-    const {name: positionRAW} = event.target
-    const cordinates = this.encodePositionToCoordinates(positionRAW)
-    console.log(cordinates, "cordinates")
+    const {name, value} = event.target
+    console.log(name, value, "name, value,")
+
+    let sudokuBoardNew = {...this.state.sudokuBoard, name: value};
+    console.log(sudokuBoardNew, "sudokuBoardNew")
+    this.setState({
+      sudokuBoard: sudokuBoardNew
+    })
+
+  }
+
+
+  setCoordinateToSudokuArray = (coordinate) => {
+
+    let sudokuBoard = this.state.sudokuBoard
+
+
   }
 
   
   render() {
     const {classes} = this.props
+    const {sudokuBoard} = this.state
     return (
 
-        <Grid container className ={classes.Grid3X3}>      
-          {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((value) => (
-            <Grid key={value} item className = {classes.grid3x3Item}>
+        <Grid container className ={classes.Grid3X3}> 
+          {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((boxNumber) => (
+            <Grid key={boxNumber} item className = {classes.grid3x3Item}>
               <Grid3X3 
-                 backgroundColor = {this.generateBackgroundColorValues()[value]}
-                 BoxNumber = {value}
+                 backgroundColor = {this.generateBackgroundColorValues()[boxNumber]}
+                 boxNumber = {boxNumber}
                  handleInputChange = {this.handleInputChange}
+                 getInputNameBasedOnCoordinate = {this.getInputNameBasedOnCoordinate}
+                 sudokuBoard = {sudokuBoard}
               />
             </Grid>
           ))}
+          )
         </Grid>         
       
     )

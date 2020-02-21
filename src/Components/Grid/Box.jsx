@@ -39,8 +39,12 @@ const styles = theme => ({
 });
 
 class Box extends Component {
+
+ 
+
   render() {
-    const {classes, backgroundColor, handleInputChange, inputName} = this.props
+    const {classes, backgroundColor, handleInputChange, inputName, sudokuBoard} = this.props
+    // console.log(!!sudokuBoard ? sudokuBoard[inputName] : "wrong", "sudokuBoard[inputName] BOXES")
     return (
     <MuiThemeProvider theme={theme}>
 
@@ -53,6 +57,7 @@ class Box extends Component {
         <InputBase
           onChange={handleInputChange}
           name = {inputName}
+          value = {!!sudokuBoard ? sudokuBoard[inputName] : ""}
         >       
         
         </InputBase>
