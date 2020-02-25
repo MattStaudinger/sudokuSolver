@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 import SudokuBoard from './Grid/SudokuBoard'
+import SolveSudokuButton from './Grid/SolveSudokuButton'
 import {withStyles} from "@material-ui/core/styles";
+import sudokuPresets from './sudokuPresets';
+import BoardPositions from './boardPositions';
 
 
 
@@ -11,11 +14,15 @@ const styles = theme => ({
        display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    margin: "auto"
-    
-  },
-
-  
+    flexDirection: "column",
+    margin: "auto",
+    marginTop: "80px"    
+  },  
+  button: {
+    display: "flex",
+    justifyContent: "center",
+    marginTop: "40px"
+  }
 });
 
 
@@ -24,18 +31,59 @@ class Sudoku extends Component {
     super(props)
   
     this.state = {
-       
+       sudokuBoard: null
     }
+  }
+  
+
+  componentDidMount() {    
+    let sudokuBoard = BoardPositions.translateSudokuArrayToStateObject(sudokuPresets.defaultPreset) 
+    this.setState({sudokuBoard})
+  }
+
+
+  solveSodoku = () => {
+    console.log("test");
+    console.log(this.state.sudokuBoard)
+  }
+
+
+
+
+  getInputNameBasedOnCoordinate = (positionRAW) => {
+    const {cordX, cordY} = BoardPositions.translateRAWPositionToCoordinates(positionRAW)
+    const inputName = `p${cordX}_${cordY}`;
+    return inputName;
+  }
+  
+
+  handleInputChange = (event) => {
+    const {name, value} = event.target;
+    let sudokuBoardNew = {...this.state.sudokuBoard, [name]: value};
+    this.setState({
+      sudokuBoard: sudokuBoardNew
+    })
   }
 
   
   render() {
     const {classes} = this.props
+    const {sudokuBoard} = this.state
     return (
       <div>
-       <div className = {classes.boardSize}>
-          <SudokuBoard />
-        </div>   
+        <div className = {classes.boardSize}>
+          <SudokuBoard 
+            sudokuBoard = {sudokuBoard}
+            handleInputChange = {this.handleInputChange}
+            getInputNameBasedOnCoordinate = {this.getInputNameBasedOnCoordinate}
+          />
+        </div> 
+        <div className = {classes.button}>
+        <SolveSudokuButton
+          solveSodoku= {this.solveSodoku}           
+          className={classes.buttonSolve}
+        />
+        </div>
       </div>
     )
   }

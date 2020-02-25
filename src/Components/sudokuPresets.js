@@ -1,7 +1,9 @@
-  module.exports = {
 
 
-    presetEasy: [
+    class SudokuPresets {
+
+  
+    presetEasy = [
 
       6, 0, 0,  1, 0, 5,  2, 0, 9,
       0, 0, 4,  9, 2, 0,  8, 0, 0,
@@ -15,9 +17,9 @@
       0, 0, 8,  0, 9, 1,  3, 0, 0,
       5, 0, 6,  7, 0, 8,  0, 0, 2
 
-    ],
+    ]
 
-    presetEasySolved: [
+    presetEasySolved = [
 
       6, 8, 7,  1, 4, 5,  2, 3, 9,
       1, 3, 4,  9, 2, 7,  8, 5, 6,
@@ -31,9 +33,9 @@
       7, 2, 8,  5, 9, 1,  3, 6, 4,
       5, 4, 6,  7, 3, 8,  1, 9, 2
 
-    ],
+    ]
 
-    presetReset: [
+    presetReset = [
 
       0, 0, 0,  0, 0, 0,  0, 0, 0,
       0, 0, 0,  0, 0, 0,  0, 0, 0,
@@ -47,11 +49,16 @@
       0, 0, 0,  0, 0, 0,  0, 0, 0,
       0, 0, 0,  0, 0, 0,  0, 0, 0
 
-    ],
+    ]
+
+
+    defaultPreset = this.presetEasy
+
+  }
 
 
 
 
 
-  
-  };
+export default new SudokuPresets();
+

@@ -44,7 +44,6 @@ class Box extends Component {
 
   render() {
     const {classes, backgroundColor, handleInputChange, inputName, sudokuBoard} = this.props
-    // console.log(!!sudokuBoard ? sudokuBoard[inputName] : "wrong", "sudokuBoard[inputName] BOXES")
     return (
     <MuiThemeProvider theme={theme}>
 
