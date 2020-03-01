@@ -84,11 +84,46 @@ class BoardPositions {
     for (let y = 1; y <= 9; y++) {
         for (let x = 1; x <= 9; x++) {
           if (sudokuArray[acc] === 0) sudokuArray[acc] = "";          
-          sudokuState[`p${x}_${y}`] = sudokuArray[acc]
+          sudokuState[`p${x}-${y}`] = sudokuArray[acc]
           acc++;
         }
     }
     return sudokuState;
+  }
+
+  getCoordinatesOfPositionState = (position) => {
+    const cordX = position[1] - 1;
+    const cordY = position[3] - 1;
+    return {cordX, cordY}
+  }
+
+
+  generateEmptySudokuArray = () => {
+
+    let sudokuArray = [];
+
+    for (let y = 0; y < 9; y++) {
+      sudokuArray[y] = [];
+        for (let x = 0; x < 9; x++) {
+          sudokuArray[y][x] = 0
+        }
+    };
+
+    return sudokuArray;
+  }
+
+  translateSudokuStateObjectToArray = (sudokuState) => {
+
+    let sudokuArray = this.generateEmptySudokuArray()
+
+     for (let pos in sudokuState) {
+       if (sudokuState[pos]) {
+        const {cordX, cordY} = this.getCoordinatesOfPositionState(pos)
+        sudokuArray[cordY][cordX] = Number(sudokuState[pos])
+       }
+    }
+
+    return sudokuArray;
   }
 
 

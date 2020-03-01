@@ -3,7 +3,7 @@ import SudokuBoard from "./Grid/SudokuBoard";
 import SolveSudokuButton from "./Grid/SolveSudokuButton";
 import { withStyles } from "@material-ui/core/styles";
 import sudokuPresets from "../sudokuPresets";
-import sudokuSolver from "../Logic/sudokuSolver";
+import Validator from "../Logic/Validator";
 import BoardPositions from "./boardPositions";
 
 const styles = theme => ({
@@ -41,9 +41,11 @@ class Sudoku extends Component {
   }
 
   solveSodoku = () => {
-    let isValid = sudokuSolver.validate(this.state.sudokuBoard);
+
+    const sudokuArray = BoardPositions.translateSudokuStateObjectToArray(this.state.sudokuBoard);
+    let {isValid, positionOfInvalidNumber} = Validator.validate(sudokuArray);
     if (!isValid) {
-      console.log("invalid Sudokuboard on position: ");
+      alert(`invalid number in row ${positionOfInvalidNumber}`)
     }
 
     // let solvedBoard = sudokuSolver.solve(this.state.sudokuBoard);
@@ -57,7 +59,7 @@ class Sudoku extends Component {
     const { cordX, cordY } = BoardPositions.translateRAWPositionToCoordinates(
       positionRAW
     );
-    const inputName = `p${cordX}_${cordY}`;
+    const inputName = `p${cordX}-${cordY}`;
     return inputName;
   };
 
