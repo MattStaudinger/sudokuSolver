@@ -153,9 +153,6 @@ class BoardPositions {
         return new Error("position of boxes out of reach")
     
     }
-
-
-
   }
 
   getCoordinatesOfBox = (positionInBox) => {
