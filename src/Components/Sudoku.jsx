@@ -2,8 +2,9 @@ import React, { Component } from "react";
 import SudokuBoard from "./Grid/SudokuBoard";
 import SolveSudokuButton from "./Grid/SolveSudokuButton";
 import { withStyles } from "@material-ui/core/styles";
-import sudokuPresets from "../sudokuPresets";
+import SudokuPresets from "../sudokuPresets";
 import Validator from "../Logic/Validator";
+import Solver from "../Logic/Solver";
 import BoardPositions from "./boardPositions";
 
 const styles = theme => ({
@@ -35,7 +36,7 @@ class Sudoku extends Component {
 
   componentDidMount() {
     let sudokuBoard = BoardPositions.translateSudokuArrayToStateObject(
-      sudokuPresets.defaultPreset
+      SudokuPresets.easy
     );
     this.setState({ sudokuBoard });
   }
@@ -46,10 +47,11 @@ class Sudoku extends Component {
     let {isValid, positionOfInvalidNumber} = Validator.validate(sudokuArray);
     if (!isValid) {
       alert(`invalid number in row ${positionOfInvalidNumber}`)
+      return;
     }
 
-    // let solvedBoard = sudokuSolver.solve(this.state.sudokuBoard);
-
+    let solvedBoard = Solver.solve(sudokuArray);
+    console.log(solvedBoard, "solvedBoard")
     // this.setState({
     //   sudokuBoard: solvedBoard
     // });

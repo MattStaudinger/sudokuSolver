@@ -1,3 +1,4 @@
+import BoardPositions from "../Components/boardPositions";
 
 
 class Validator {
@@ -121,15 +122,19 @@ class Validator {
   }
 
 
+
   validateBoxes = (sudokuBoard) => {
 
     let sudokuBoardBoxArrays = this.translateBoardToBoxArrays(sudokuBoard)
 
-    for (let x = 0; x < 9; x++) {
-      const box = sudokuBoardBoxArrays[x];
+    for (let boxIndex = 0; boxIndex < 9; boxIndex++) {
+      const box = sudokuBoardBoxArrays[boxIndex];
       let {isValid, positionOfInvalidNumber} = this.validate1DArray(box)
-      if (!isValid) 
-        return {isValid, positionOfInvalidNumber: `${positionOfInvalidNumber+1}-${x}`};
+
+      if (!isValid) {
+        const {cordX, cordY} = BoardPositions.translateBoxPositionsToCoordinates(boxIndex, positionOfInvalidNumber)
+        return {isValid, positionOfInvalidNumber: `${cordX+1}-${cordY + 1}`};
+      }
     }
 
     return {isValid: true, positionOfInvalidNumber: null};

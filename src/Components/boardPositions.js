@@ -79,13 +79,11 @@ class BoardPositions {
   translateSudokuArrayToStateObject = (sudokuArray) => {
 
     let sudokuState = {}
-    let acc = 0;;
 
-    for (let y = 1; y <= 9; y++) {
-        for (let x = 1; x <= 9; x++) {
-          if (sudokuArray[acc] === 0) sudokuArray[acc] = "";          
-          sudokuState[`p${x}-${y}`] = sudokuArray[acc]
-          acc++;
+    for (let y = 0; y < 9; y++) {
+        for (let x = 0; x < 9; x++) {
+          if (sudokuArray[y][x] === 0) sudokuArray[y][x] = "";          
+          sudokuState[`p${x + 1}-${y + 1}`] = sudokuArray[y][x]
         }
     }
     return sudokuState;
@@ -124,6 +122,59 @@ class BoardPositions {
     }
 
     return sudokuArray;
+  }
+
+
+  translateBoxPositionsToCoordinates = (boxIndex, positionOfInvalidNumber) => {
+    //boxIndex goes from left top to right bottom from 0 to 8, positionOfInvalidNumber in the same manner
+
+    const {cordX, cordY} = this.getCoordinatesOfBox(positionOfInvalidNumber)
+
+    switch (boxIndex) {
+      case 0:
+        return {cordX, cordY}
+      case 1:
+        return {cordX: cordX + 3, cordY}
+      case 2:
+        return {cordX: cordX + 6, cordY}
+      case 3:
+        return {cordX, cordY: cordY + 3}
+      case 4:
+        return {cordX: cordX + 3, cordY: cordY + 3}
+      case 5:
+        return {cordX: cordX + 6, cordY: cordY +3}
+      case 6:
+        return {cordX, cordY: cordY + 6}
+      case 7:
+        return {cordX: cordX + 3, cordY: cordY + 6}
+      case 8:
+        return {cordX: cordX + 6, cordY: cordY + 6}
+      default:
+        return new Error("position of boxes out of reach")
+    
+    }
+
+
+
+  }
+
+  getCoordinatesOfBox = (positionInBox) => {
+    switch (positionInBox) {
+      case 0:
+      case 1:
+      case 2:
+        return {cordX: positionInBox, cordY: 0} 
+      case 3:
+      case 4:
+      case 5:
+        return {cordX: positionInBox - 3, cordY: 1} 
+      case 6:
+      case 7:
+      case 8:
+        return {cordX: positionInBox - 6, cordY: 2}
+      default:
+        return new Error("position of box out of reach")
+    }
   }
 
 
