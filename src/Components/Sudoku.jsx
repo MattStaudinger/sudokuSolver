@@ -34,11 +34,15 @@ class Sudoku extends Component {
     };
   }
 
-  componentDidMount() {
-    let sudokuBoard = BoardPositions.translateSudokuArrayToStateObject(
-      SudokuPresets.easy
+  updateSudokuBoard(suokuArray) {
+     let sudokuBoard = BoardPositions.translateSudokuArrayToStateObject(
+      suokuArray
     );
-    this.setState({ sudokuBoard });
+    this.setState({ sudokuBoard })
+  }
+
+  componentDidMount() {
+    this.updateSudokuBoard(SudokuPresets.easy)   
   }
 
   solveSodoku = () => {
@@ -51,10 +55,9 @@ class Sudoku extends Component {
     }
 
     let solvedBoard = Solver.solve(sudokuArray);
+    this.updateSudokuBoard(solvedBoard)   
+
     console.log(solvedBoard, "solvedBoard")
-    // this.setState({
-    //   sudokuBoard: solvedBoard
-    // });
   };
 
   getInputNameBasedOnCoordinate = positionRAW => {

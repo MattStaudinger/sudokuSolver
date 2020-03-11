@@ -9,33 +9,31 @@ class Solver {
   // each field has 9 possible numbers. The sudoku will be solved by 'scratching' off
   // all numbers that are not possible anymore due to the given numbers.
   // Each 'level' brings a higher degree of logic. The easiest suodkus will already be solved
-  // by level 1
+  // at level 1
   solve = sudokuBoard => {
     console.log("called function solve with ", sudokuBoard);
-
-    const sudokuBoardWithAllPossibleNumbers = this.generateAllPossibleNumbersForSudoku(sudokuBoard)
-    console.log("transformed sudoku-array to: ", sudokuBoardWithAllPossibleNumbers);
+    const sudokuBoardWithAllPossibleNumbers = this.generateAllPossibleNumbersForFields(sudokuBoard)
     this.sudokuBoard = sudokuBoardWithAllPossibleNumbers;
 
     this.solveLevel1()
 
-
+    return this.sudokuBoard;
 
 
   };
 
   
-  generateAllPossibleNumbersForSudoku = (sudokuBoard) => {
+  generateAllPossibleNumbersForFields = (sudokuBoard) => {
+    
     // if number in field is already in use, then don't add any 
     // other possibilities to it, else add all numbers
      for (let y = 0; y < 9; y++) {
         for (let x = 0; x < 9; x++) {
-
-          if (!sudokuBoard[y][x]) 
+          if (!sudokuBoard[y][x])
             sudokuBoard[y][x] = [1,2,3,4,5,6,7,8,9]
-          else 
+          else
             sudokuBoard[y][x] = [sudokuBoard[y][x]]
-        }
+          }
      }
      return sudokuBoard;
   }
@@ -43,50 +41,47 @@ class Solver {
   //level 1: check for rows, columns and boxes and scratch out all options of each field
   // that aren't possible
   solveLevel1 = () => {
-    console.log("Level 1: first check");
+    console.log("----- Level 1 ----");
 
-    this.checkRows(this.sudokuBoard)
-   
+    this.checkRows()
+    
 
   };
 
 
 
-  checkRows = sudokuBoard => {
-
+  checkRows = () => {
     for (let y = 0; y < 9; y++) {
       this.checkRow(y);
-     
     }
-
   }
 
-  isFixedNumber = (field) => {
-    console.log(field, "field")
+  isFixedField = (field) => {
     return field.length === 1;
   }
 
-  checkRow = y => {
-    
-    let {sudokuBoard} = this
+  getAllFixedNumbersOfArray = (y) => {
+    const fixedFields = this.sudokuBoard[y].filter(x =>
+       this.isFixedField(x)
+    )
+    const fixedNumbers = fixedFields.map(field => field[0])
+    return fixedNumbers;
+  }
 
-    for (let x = 0; x < 9; x++) {
-        if (this.isFixedNumber(sudokuBoard[y])) continue;
-      for (let xRepeated = 0; xRepeated < 9; xRepeated++) {
-        console.log(xRepeated, "xRepeated")
-        //return only the numbers, that are not already "used" in the row by another number
-        sudokuBoard[y][x] = sudokuBoard[y][x].filter(number => {
-            if (this.isFixedNumber(sudokuBoard[y][xRepeated]) && !xRepeated !== x) {
-              console.log(sudokuBoard[y][xRepeated][0] !== number, "isTrue?")
-              console.log(sudokuBoard[y][xRepeated][0], "which nukber?")
-              return sudokuBoard[y][xRepeated][0] !== number;
-            }
-            return false
-          })
-     
-      }
-    }
+  scratchAllFixedNumbersFromField = (field, fixedNumbers) => {
+    return field.filter(possibleNumberOfField => {
+        return !fixedNumbers.includes(possibleNumberOfField) 
+    })
+  }
 
+  checkRow = y => {    
+    let fixedNumbers = this.getAllFixedNumbersOfArray(y);
+    this.sudokuBoard[y] = this.sudokuBoard[y].map(x => {
+
+      if (this.isFixedField(x)) return x;
+      const newPossibleNumbersForField = this.scratchAllFixedNumbersFromField(x, fixedNumbers)
+      return newPossibleNumbersForField
+    })
 
   }
 }
