@@ -53,7 +53,6 @@ class Sudoku extends Component {
       alert(`invalid number in row ${positionOfInvalidNumber}`)
       return;
     }
-
     let solvedBoard = Solver.solve(sudokuArray);
     this.updateSudokuBoard(solvedBoard)   
 

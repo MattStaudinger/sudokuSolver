@@ -125,10 +125,10 @@ class BoardPositions {
   }
 
 
-  translateBoxPositionsToCoordinates = (boxIndex, positionOfInvalidNumber) => {
-    //boxIndex goes from left top to right bottom from 0 to 8, positionOfInvalidNumber in the same manner
+  translateBoxPositionsToCoordinates = (boxIndex, positionOfNumber) => {
+    //boxIndex goes from left top to right bottom from 0 to 8, positionOfNumber in the same manner
 
-    const {cordX, cordY} = this.getCoordinatesOfBox(positionOfInvalidNumber)
+    const {cordX, cordY} = this.getCoordinatesOfBox(positionOfNumber)
 
     switch (boxIndex) {
       case 0:
@@ -155,6 +155,8 @@ class BoardPositions {
     }
   }
 
+
+
   getCoordinatesOfBox = (positionInBox) => {
     switch (positionInBox) {
       case 0:
@@ -173,6 +175,55 @@ class BoardPositions {
         return new Error("position of box out of reach")
     }
   }
+
+  switchRowToColumnOfBoard = sudokuBoard => {
+    let sudokuBoardSwitchedXAndY = [];
+
+    for (let x = 0; x < 9; x++) {
+      sudokuBoardSwitchedXAndY[x] = []
+      for (let y = 0; y < 9; y++) {       
+        sudokuBoardSwitchedXAndY[x][y] = sudokuBoard[y][x]
+      }
+    }
+    return sudokuBoardSwitchedXAndY;
+
+  }
+
+
+  switchBoardToBoxArrays = (sudokuBoard) => {
+
+    let sudokuBoardArrayBoxes = []
+
+    for (let z = 0; z<9; z++) {
+      sudokuBoardArrayBoxes[z] = []
+    }
+    
+    for (let y = 0; y < 9; y++) {
+      for (let x = 0; x < 9; x++) { 
+     
+        if (x < 3 && y < 3)
+          sudokuBoardArrayBoxes[0].push(sudokuBoard[y][x])        
+        else if (x >= 3 && x < 6 && y < 3) 
+          sudokuBoardArrayBoxes[1].push(sudokuBoard[y][x])        
+        else if (x >= 6 && y < 3)
+          sudokuBoardArrayBoxes[2].push(sudokuBoard[y][x])
+        else if (x < 3 && y >=3 && y < 6)
+          sudokuBoardArrayBoxes[3].push(sudokuBoard[y][x])
+        else if (x >=3 && x< 6 && y >=3 && y < 6)
+          sudokuBoardArrayBoxes[4].push(sudokuBoard[y][x])
+        else if (x >= 6 && y >=3 && y < 6)
+          sudokuBoardArrayBoxes[5].push(sudokuBoard[y][x])
+        else if (x < 3 && y >= 6)
+          sudokuBoardArrayBoxes[6].push(sudokuBoard[y][x])
+        else if (x >=3 && x< 6 && y >= 6)
+          sudokuBoardArrayBoxes[7].push(sudokuBoard[y][x])
+        else if (x >= 6 && y >= 6)
+          sudokuBoardArrayBoxes[8].push(sudokuBoard[y][x])  
+      }
+    }
+    return sudokuBoardArrayBoxes;
+  }
+
 
 
 }

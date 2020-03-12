@@ -1,8 +1,9 @@
-
+import BoardPositions from "../Components/boardPositions";
 
 class Solver {
   constructor() {
     this.sudokuBoard = null;
+    this.isNewNumberFound = false
   }
 
 
@@ -43,17 +44,62 @@ class Solver {
   solveLevel1 = () => {
     console.log("----- Level 1 ----");
 
-    this.checkRows()
-    
+    do {
+      this.checkRows()
+      this.checkColumns()
+      this.checkBoxes()
+    }
+    while (this.isNewNumberFound);
+
 
   };
 
 
 
   checkRows = () => {
+    this.isNewNumberFound = false;
+
     for (let y = 0; y < 9; y++) {
       this.checkRow(y);
     }
+  }
+
+  checkColumns = () => {
+
+    this.isNewNumberFound = false;
+    this.sudokuBoard = BoardPositions.switchRowToColumnOfBoard(this.sudokuBoard)
+
+    for (let x = 0; x < 9; x++) {
+      this.checkRow(x);
+    }
+
+    this.sudokuBoard = BoardPositions.switchRowToColumnOfBoard(this.sudokuBoard)
+
+  }
+
+  checkBoxes = () => {
+
+    this.isNewNumberFound = false;
+    this.sudokuBoard = BoardPositions.switchBoardToBoxArrays(this.sudokuBoard)
+
+    for (let x = 0; x < 9; x++) {
+      this.checkRow(x);
+    }
+
+    this.sudokuBoard = BoardPositions.switchBoardToBoxArrays(this.sudokuBoard)
+
+  }
+
+  checkRow = y => {    
+    let fixedNumbers = this.getAllFixedNumbersOfArray(y);
+    this.sudokuBoard[y] = this.sudokuBoard[y].map(x => {
+
+      if (this.isFixedField(x)) return x;
+      const newPossibleNumbersForField = this.scratchAllFixedNumbersFromField(x, fixedNumbers)
+      if (this.isFixedField(newPossibleNumbersForField)) this.isNewNumberFound = true
+      return newPossibleNumbersForField
+    })
+
   }
 
   isFixedField = (field) => {
@@ -69,21 +115,13 @@ class Solver {
   }
 
   scratchAllFixedNumbersFromField = (field, fixedNumbers) => {
+      
     return field.filter(possibleNumberOfField => {
         return !fixedNumbers.includes(possibleNumberOfField) 
     })
   }
 
-  checkRow = y => {    
-    let fixedNumbers = this.getAllFixedNumbersOfArray(y);
-    this.sudokuBoard[y] = this.sudokuBoard[y].map(x => {
 
-      if (this.isFixedField(x)) return x;
-      const newPossibleNumbersForField = this.scratchAllFixedNumbersFromField(x, fixedNumbers)
-      return newPossibleNumbersForField
-    })
-
-  }
 }
 
 export default new Solver();

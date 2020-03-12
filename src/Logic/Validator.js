@@ -1,9 +1,13 @@
 import BoardPositions from "../Components/boardPositions";
 
-
 class Validator {
 
   validate = sudokuBoard => {
+
+    let validNumbers = this.validNumbers(sudokuBoard)
+    if (!validNumbers.isValid) 
+      return {isValid: false, positionOfInvalidNumber: validNumbers.positionOfInvalidNumber};
+
 
     let validRows = this.validateRows(sudokuBoard)
     if (!validRows.isValid) 
@@ -20,22 +24,25 @@ class Validator {
     
     return {isValid: true, positionOfInvalidNumber: null};
 
-
-
   };
+
+  validNumbers = (sudokuBoard) => {
+     for (let y = 0; y < 9; y++) {
+        for (let x = 0; x < 9; x++) {
+          if (sudokuBoard[y][x] < 0 || sudokuBoard[y][x] > 9)
+            return {isValid: false, positionOfInvalidNumber: `${x+1}-${y + 1}`}      
+
+
+
+        }
+     }
+            return {isValid: true, positionOfInvalidNumber: null}
+  }
 
 
   validateRows = sudokuBoard => {
-
-    for (let y = 0; y < 9; y++) {
-      const row = sudokuBoard[y];
-      let {isValid, positionOfInvalidNumber} = this.validate1DArray(row)      
-      if (!isValid) 
-        return {isValid, positionOfInvalidNumber: `${positionOfInvalidNumber+1}-${y+1}`};
-    }
-
-    return {isValid: true, positionOfInvalidNumber: null};
-
+    const translateCoordinatesToStatePosition = (y,positionOfInvalidNumber) =>  `${positionOfInvalidNumber+1}-${y+1}`
+    return this.validateRow(sudokuBoard, translateCoordinatesToStatePosition);
   }
 
   isNumberMoreThanOnceInArray = (numberToSearchInRow, row) => {
@@ -58,86 +65,41 @@ class Validator {
    
   };
 
-  switchXandYOfBoard = sudokuBoard => {
-    let sudokuBoardSwitchedXAndY = [];
 
-    for (let x = 0; x < 9; x++) {
-      sudokuBoardSwitchedXAndY[x] = []
-      for (let y = 0; y < 9; y++) {       
-        sudokuBoardSwitchedXAndY[x][y] = sudokuBoard[y][x]
-      }
-    }
-    return sudokuBoardSwitchedXAndY;
-
-  }
 
 
   validateColumns = (sudokuBoard) => {
 
-    let sudokuBoardSwitchedXAndY = this.switchXandYOfBoard(sudokuBoard)
-
-    for (let x = 0; x < 9; x++) {
-      const column = sudokuBoardSwitchedXAndY[x];
-      let {isValid, positionOfInvalidNumber} = this.validate1DArray(column)      
-      if (!isValid) 
-        return {isValid, positionOfInvalidNumber: `${x+1}-${positionOfInvalidNumber+1}`};
-    }
-
-    return {isValid: true, positionOfInvalidNumber: null};
+    let sudokuBoardSwitchedXAndY = BoardPositions.switchRowToColumnOfBoard(sudokuBoard)
+    const translateCoordinatesToStatePosition = (y,positionOfInvalidNumber) =>  `${y+1}-${positionOfInvalidNumber+1}`
+    return this.validateRow(sudokuBoardSwitchedXAndY, translateCoordinatesToStatePosition);
 
   };
 
-  translateBoardToBoxArrays = (sudokuBoard) => {
+  validateRow = (sudokuArray, callbackPositionTranslation) => {
 
-    let sudokuBoardArrayBoxes = []
-
-    for (let z = 0; z<9; z++) {
-      sudokuBoardArrayBoxes[z] = []
-    }
-    
     for (let y = 0; y < 9; y++) {
-      for (let x = 0; x < 9; x++) { 
-     
-        if (x < 3 && y < 3)
-          sudokuBoardArrayBoxes[0].push(sudokuBoard[y][x])        
-        else if (x >= 3 && x < 6 && y < 3) 
-          sudokuBoardArrayBoxes[1].push(sudokuBoard[y][x])        
-        else if (x >= 6 && y < 3)
-          sudokuBoardArrayBoxes[2].push(sudokuBoard[y][x])
-        else if (x < 3 && y >=3 && y < 6)
-          sudokuBoardArrayBoxes[3].push(sudokuBoard[y][x])
-        else if (x >=3 && x< 6 && y >=3 && y < 6)
-          sudokuBoardArrayBoxes[4].push(sudokuBoard[y][x])
-        else if (x >= 6 && y >=3 && y < 6)
-          sudokuBoardArrayBoxes[5].push(sudokuBoard[y][x])
-        else if (x < 3 && y >= 6)
-          sudokuBoardArrayBoxes[6].push(sudokuBoard[y][x])
-        else if (x >=3 && x< 6 && y >= 6)
-          sudokuBoardArrayBoxes[7].push(sudokuBoard[y][x])
-        else if (x >= 6 && y >= 6)
-          sudokuBoardArrayBoxes[8].push(sudokuBoard[y][x])  
+      const row = sudokuArray[y];
+      let {isValid, positionOfInvalidNumber} = this.validate1DArray(row)
+
+      if (!isValid) {
+        return {isValid, positionOfInvalidNumber: callbackPositionTranslation(y, positionOfInvalidNumber)};
       }
     }
-    return sudokuBoardArrayBoxes;
-  }
+    return {isValid: true, positionOfInvalidNumber: null};
 
+  }
 
 
   validateBoxes = (sudokuBoard) => {
 
-    let sudokuBoardBoxArrays = this.translateBoardToBoxArrays(sudokuBoard)
-
-    for (let boxIndex = 0; boxIndex < 9; boxIndex++) {
-      const box = sudokuBoardBoxArrays[boxIndex];
-      let {isValid, positionOfInvalidNumber} = this.validate1DArray(box)
-
-      if (!isValid) {
-        const {cordX, cordY} = BoardPositions.translateBoxPositionsToCoordinates(boxIndex, positionOfInvalidNumber)
-        return {isValid, positionOfInvalidNumber: `${cordX+1}-${cordY + 1}`};
-      }
+    const translateCoordinatesToStatePosition = (y, positionOfInvalidNumber) =>  {
+      const {cordX, cordY} = BoardPositions.translateBoxPositionsToCoordinates(y, positionOfInvalidNumber)
+      return `${cordX+1}-${cordY + 1}`
     }
 
-    return {isValid: true, positionOfInvalidNumber: null};
+    let sudokuBoardBoxArrays = BoardPositions.switchBoardToBoxArrays(sudokuBoard)
+    return this.validateRow(sudokuBoardBoxArrays, translateCoordinatesToStatePosition)
 
   };
 
