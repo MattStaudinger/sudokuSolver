@@ -1,10 +1,10 @@
-import BoardPositions from "../Components/boardPositions";
+import BoardPositions from "./BoardPositions";
 
 class Validator {
 
   validate = sudokuBoard => {
 
-    let validNumbers = this.validNumbers(sudokuBoard)
+    let validNumbers = this.validateNumbers(sudokuBoard)
     if (!validNumbers.isValid) 
       return {isValid: false, positionOfInvalidNumber: validNumbers.positionOfInvalidNumber};
 
@@ -26,14 +26,11 @@ class Validator {
 
   };
 
-  validNumbers = (sudokuBoard) => {
+  validateNumbers = (sudokuBoard) => {
      for (let y = 0; y < 9; y++) {
         for (let x = 0; x < 9; x++) {
-          if (sudokuBoard[y][x] < 0 || sudokuBoard[y][x] > 9)
-            return {isValid: false, positionOfInvalidNumber: `${x+1}-${y + 1}`}      
-
-
-
+          if ((sudokuBoard[y][x] < 1 || sudokuBoard[y][x] > 9 || isNaN(sudokuBoard[y][x])) && sudokuBoard[y][x] !== "")
+            return {isValid: false, positionOfInvalidNumber: `${x+1}-${y + 1}`}
         }
      }
             return {isValid: true, positionOfInvalidNumber: null}

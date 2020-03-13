@@ -5,7 +5,7 @@ import { withStyles } from "@material-ui/core/styles";
 import SudokuPresets from "../sudokuPresets";
 import Validator from "../Logic/Validator";
 import Solver from "../Logic/Solver";
-import BoardPositions from "./boardPositions";
+import BoardPositions from "../Logic/BoardPositions";
 
 const styles = theme => ({
   boardSize: {
@@ -53,10 +53,12 @@ class Sudoku extends Component {
       alert(`invalid number in row ${positionOfInvalidNumber}`)
       return;
     }
-    let solvedBoard = Solver.solve(sudokuArray);
-    this.updateSudokuBoard(solvedBoard)   
+    let {sudokuSolved, statisticsOfSolving} = Solver.solve(sudokuArray);
 
-    console.log(solvedBoard, "solvedBoard")
+    this.updateSudokuBoard(sudokuSolved)   
+    alert(`amount of found numbers in original sudoku: ${statisticsOfSolving.totalNumbersOld}, amount in new sudoku: ${statisticsOfSolving.totalFoundNumbersNew} \n
+    amount of possible numbers in original sudoku: ${statisticsOfSolving.totalPossibleNumbersOld}, amount in new sudoku: ${statisticsOfSolving.totalPossibleNumbersNew}`)
+
   };
 
   getInputNameBasedOnCoordinate = positionRAW => {

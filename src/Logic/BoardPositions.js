@@ -103,7 +103,7 @@ class BoardPositions {
     for (let y = 0; y < 9; y++) {
       sudokuArray[y] = [];
         for (let x = 0; x < 9; x++) {
-          sudokuArray[y][x] = 0
+          sudokuArray[y][x] = ""
         }
     };
 
@@ -113,7 +113,6 @@ class BoardPositions {
   translateSudokuStateObjectToArray = (sudokuState) => {
 
     let sudokuArray = this.generateEmptySudokuArray()
-
      for (let pos in sudokuState) {
        if (sudokuState[pos]) {
         const {cordX, cordY} = this.getCoordinatesOfPositionState(pos)

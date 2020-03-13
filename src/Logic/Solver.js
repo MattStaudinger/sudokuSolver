@@ -1,9 +1,10 @@
-import BoardPositions from "../Components/boardPositions";
+import BoardPositions from "./BoardPositions";
+import Statistics from "./Statistics";
 
 class Solver {
   constructor() {
     this.sudokuBoard = null;
-    this.isNewNumberFound = false
+    this.isNewNumberScratchedOff = false
   }
 
 
@@ -14,18 +15,20 @@ class Solver {
   solve = sudokuBoard => {
     console.log("called function solve with ", sudokuBoard);
     const sudokuBoardWithAllPossibleNumbers = this.generateAllPossibleNumbersForFields(sudokuBoard)
-    this.sudokuBoard = sudokuBoardWithAllPossibleNumbers;
+    this.sudokuBoard = {...sudokuBoardWithAllPossibleNumbers};
 
     this.solveLevel1()
 
-    return this.sudokuBoard;
-
+    console.log(this.sudokuBoard, "solvedBoard with possible numbers")
+    const sudokuSolved = this.translateSudokuWithAllPossibleNumbersBackToNormalArray()
+    
+    const statisticsOfSolving = Statistics.calculateFoundNumbers(sudokuBoardWithAllPossibleNumbers, this.sudokuBoard)
+    return {sudokuSolved, statisticsOfSolving}
 
   };
 
   
   generateAllPossibleNumbersForFields = (sudokuBoard) => {
-    
     // if number in field is already in use, then don't add any 
     // other possibilities to it, else add all numbers
      for (let y = 0; y < 9; y++) {
@@ -39,17 +42,34 @@ class Solver {
      return sudokuBoard;
   }
 
+  translateSudokuWithAllPossibleNumbersBackToNormalArray = () => {
+
+    let newSudokuBoard = [];
+
+    for (let y = 0; y < 9; y++) {
+      newSudokuBoard[y] = []
+        for (let x = 0; x < 9; x++) {
+          if (this.isFixedField(this.sudokuBoard[y][x]))
+            newSudokuBoard[y][x] = this.sudokuBoard[y][x][0];
+          else 
+            newSudokuBoard[y][x] = ""
+        }
+    }
+    return newSudokuBoard;
+  }
+
   //level 1: check for rows, columns and boxes and scratch out all options of each field
   // that aren't possible
   solveLevel1 = () => {
     console.log("----- Level 1 ----");
-
     do {
+      this.isNewNumberScratchedOff = false;
+
       this.checkRows()
       this.checkColumns()
       this.checkBoxes()
     }
-    while (this.isNewNumberFound);
+    while (this.isNewNumberScratchedOff);
 
 
   };
@@ -57,16 +77,12 @@ class Solver {
 
 
   checkRows = () => {
-    this.isNewNumberFound = false;
-
     for (let y = 0; y < 9; y++) {
       this.checkRow(y);
     }
   }
 
   checkColumns = () => {
-
-    this.isNewNumberFound = false;
     this.sudokuBoard = BoardPositions.switchRowToColumnOfBoard(this.sudokuBoard)
 
     for (let x = 0; x < 9; x++) {
@@ -78,8 +94,6 @@ class Solver {
   }
 
   checkBoxes = () => {
-
-    this.isNewNumberFound = false;
     this.sudokuBoard = BoardPositions.switchBoardToBoxArrays(this.sudokuBoard)
 
     for (let x = 0; x < 9; x++) {
@@ -96,7 +110,6 @@ class Solver {
 
       if (this.isFixedField(x)) return x;
       const newPossibleNumbersForField = this.scratchAllFixedNumbersFromField(x, fixedNumbers)
-      if (this.isFixedField(newPossibleNumbersForField)) this.isNewNumberFound = true
       return newPossibleNumbersForField
     })
 
@@ -117,7 +130,12 @@ class Solver {
   scratchAllFixedNumbersFromField = (field, fixedNumbers) => {
       
     return field.filter(possibleNumberOfField => {
-        return !fixedNumbers.includes(possibleNumberOfField) 
+        if (fixedNumbers.includes(possibleNumberOfField)) {
+          this.isNewNumberScratchedOff = true
+          return false
+        }
+        else
+          return true
     })
   }
 
