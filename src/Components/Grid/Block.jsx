@@ -38,7 +38,7 @@ const styles = theme => ({
   },
 });
 
-class Box extends Component {
+class Block extends Component {
 
  
 
@@ -68,4 +68,4 @@ class Box extends Component {
 }
 
 
-export default withStyles(styles)(Box);
+export default withStyles(styles)(Block);

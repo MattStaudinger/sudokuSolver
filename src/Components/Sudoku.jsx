@@ -57,7 +57,7 @@ class Sudoku extends Component {
 
     this.updateSudokuBoard(sudokuSolved)   
     alert(`amount of found numbers in original sudoku: ${statisticsOfSolving.totalNumbersOld}, amount in new sudoku: ${statisticsOfSolving.totalFoundNumbersNew} \n
-    amount of possible numbers in original sudoku: ${statisticsOfSolving.totalPossibleNumbersOld}, amount in new sudoku: ${statisticsOfSolving.totalPossibleNumbersNew}`)
+    amount of candidates in original sudoku: ${statisticsOfSolving.totalPossibleNumbersOld}, amount in new sudoku: ${statisticsOfSolving.totalPossibleNumbersNew}`)
 
   };
 

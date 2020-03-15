@@ -17,9 +17,9 @@ class Validator {
     if (!validColumns.isValid) 
       return {isValid: false, positionOfInvalidNumber: validColumns.positionOfInvalidNumber};
 
-    let validBoxes = this.validateBoxes(sudokuBoard)
-    if (!validBoxes.isValid) 
-      return {isValid: false, positionOfInvalidNumber: validBoxes.positionOfInvalidNumber};
+    let validBlocks = this.validateBlocks(sudokuBoard)
+    if (!validBlocks.isValid) 
+      return {isValid: false, positionOfInvalidNumber: validBlocks.positionOfInvalidNumber};
       
     
     return {isValid: true, positionOfInvalidNumber: null};
@@ -88,15 +88,15 @@ class Validator {
   }
 
 
-  validateBoxes = (sudokuBoard) => {
+  validateBlocks = (sudokuBoard) => {
 
     const translateCoordinatesToStatePosition = (y, positionOfInvalidNumber) =>  {
-      const {cordX, cordY} = BoardPositions.translateBoxPositionsToCoordinates(y, positionOfInvalidNumber)
+      const {cordX, cordY} = BoardPositions.translateBlockPositionsToCoordinates(y, positionOfInvalidNumber)
       return `${cordX+1}-${cordY + 1}`
     }
 
-    let sudokuBoardBoxArrays = BoardPositions.switchBoardToBoxArrays(sudokuBoard)
-    return this.validateRow(sudokuBoardBoxArrays, translateCoordinatesToStatePosition)
+    let sudokuBoardBlockArrays = BoardPositions.switchBoardToBlockArrays(sudokuBoard)
+    return this.validateRow(sudokuBoardBlockArrays, translateCoordinatesToStatePosition)
 
   };
 

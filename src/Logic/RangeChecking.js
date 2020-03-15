@@ -24,7 +24,7 @@ class RangeChecking {
 
   checkBlocksForCandidateInCommonColumnOrRow = () => {
 
-    const sudokuBoardBlockArrays = BoardPositions.switchBoardToBoxArrays(this.sudokuBoard)
+    const sudokuBoardBlockArrays = BoardPositions.switchBoardToBlockArrays(this.sudokuBoard)
     console.log(sudokuBoardBlockArrays, "sudokuBoardBlockArrays")
     return;
     

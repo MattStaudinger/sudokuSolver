@@ -26,11 +26,11 @@ class SudokuBoard extends Component {
     return (
 
         <Grid container className ={classes.Grid3X3}> 
-          {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((boxNumber) => (
-            <Grid key={boxNumber} item className = {classes.grid3x3Item}>
+          {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((blockNumber) => (
+            <Grid key={blockNumber} item className = {classes.grid3x3Item}>
               <Grid3X3 
-                 backgroundColor = {this.generateBackgroundColorValues()[boxNumber]}
-                 boxNumber = {boxNumber}
+                 backgroundColor = {this.generateBackgroundColorValues()[blockNumber]}
+                 blockNumber = {blockNumber}
                  handleInputChange = {handleInputChange}
                  getInputNameBasedOnCoordinate = {getInputNameBasedOnCoordinate}
                  sudokuBoard = {sudokuBoard}
