@@ -16,7 +16,7 @@ class Solver {
     const sudokuBoardWithAllPossibleNumbers = this.generateAllPossibleNumbersForFields(
       sudokuBoard
     );
-    this.sudokuBoard = { ...sudokuBoardWithAllPossibleNumbers };
+    this.sudokuBoard = [...sudokuBoardWithAllPossibleNumbers];
 
     // there are mutliple steps (depending on the difficulty of a sudoku) to solve a sudoku. Starting from the easiest method to the more advanced.
     // All methods are explained here: https://www.stolaf.edu/people/hansonr/sudoku/explain.htm
