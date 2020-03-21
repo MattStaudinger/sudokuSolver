@@ -35,30 +35,30 @@ class Sudoku extends Component {
   }
 
   updateSudokuBoard(suokuArray) {
-     let sudokuBoard = BoardPositions.translateSudokuArrayToStateObject(
+    let sudokuBoard = BoardPositions.translateSudokuArrayToStateObject(
       suokuArray
     );
-    this.setState({ sudokuBoard })
+    this.setState({ sudokuBoard });
   }
 
   componentDidMount() {
-    this.updateSudokuBoard(SudokuPresets.easy)   
+    this.updateSudokuBoard(SudokuPresets.hard2);
   }
 
   solveSodoku = () => {
-
-    const sudokuArray = BoardPositions.translateSudokuStateObjectToArray(this.state.sudokuBoard);
-    let {isValid, positionOfInvalidNumber} = Validator.validate(sudokuArray);
+    const sudokuArray = BoardPositions.translateSudokuStateObjectToArray(
+      this.state.sudokuBoard
+    );
+    let { isValid, positionOfInvalidNumber } = Validator.validate(sudokuArray);
     if (!isValid) {
-      alert(`invalid number in row ${positionOfInvalidNumber}`)
+      alert(`invalid number in row ${positionOfInvalidNumber}`);
       return;
     }
-    let {sudokuSolved, statisticsOfSolving} = Solver.solve(sudokuArray);
+    let { sudokuSolved, statisticsOfSolving } = Solver.solve(sudokuArray);
 
-    this.updateSudokuBoard(sudokuSolved)   
+    this.updateSudokuBoard(sudokuSolved);
     alert(`amount of found numbers in original sudoku: ${statisticsOfSolving.totalNumbersOld}, amount in new sudoku: ${statisticsOfSolving.totalFoundNumbersNew} \n
-    amount of candidates in original sudoku: ${statisticsOfSolving.totalPossibleNumbersOld}, amount in new sudoku: ${statisticsOfSolving.totalPossibleNumbersNew}`)
-
+    amount of candidates in original sudoku: ${statisticsOfSolving.totalPossibleNumbersOld}, amount in new sudoku: ${statisticsOfSolving.totalPossibleNumbersNew}`);
   };
 
   getInputNameBasedOnCoordinate = positionRAW => {
@@ -76,6 +76,8 @@ class Sudoku extends Component {
       sudokuBoard: sudokuBoardNew
     });
   };
+
+  handleSudokuArrayMaker = event => {};
 
   render() {
     const { classes } = this.props;

@@ -1,4 +1,5 @@
 import BoardPositions from "./BoardPositions";
+import ScratchOffCheck from "./ScratchOffCheck";
 
 class CrossHatching {
   constructor() {
@@ -12,12 +13,14 @@ class CrossHatching {
     console.log("----- Level 1: crossHatching ----");
     this.sudokuBoard = sudokuBoard;
     let counter = 0;
+
     do {
       counter++;
       console.log(
         "----------------ROUND " + counter + " crossHatching -----------------"
       );
       this.hasNewCandidateFound = false;
+      this.sudokuBoard = ScratchOffCheck.solve(this.sudokuBoard);
       this.checkRows();
       this.checkColumns();
       this.checkBlocks();
@@ -27,9 +30,7 @@ class CrossHatching {
   };
 
   checkRows = () => {
-    for (let y = 0; y < 9; y++) {
-      this.checkRow(y);
-    }
+    this.checkArrayForSinglePossibleCandidates();
   };
 
   checkColumns = () => {
@@ -37,9 +38,7 @@ class CrossHatching {
       this.sudokuBoard
     );
 
-    for (let x = 0; x < 9; x++) {
-      this.checkRow(x);
-    }
+    this.checkArrayForSinglePossibleCandidates();
 
     this.sudokuBoard = BoardPositions.switchRowToColumnOfBoard(
       this.sudokuBoard
@@ -51,36 +50,32 @@ class CrossHatching {
       this.sudokuBoard
     );
 
-    for (let y = 0; y < 9; y++) {
-      this.checkRow(y);
-    }
-
-    this.checkBlocksForSinglePossibleCandidates();
+    this.checkArrayForSinglePossibleCandidates();
 
     this.sudokuBoard = BoardPositions.switchBoardToBlockArrays(
       this.sudokuBoard
     );
   };
 
-  checkBlocksForSinglePossibleCandidates = () => {
+  checkArrayForSinglePossibleCandidates = () => {
     this.sudokuBoard = this.sudokuBoard.map((y, rowIndex) => {
-      const numbersWithSinglePossibleCandidates = this.getNumbersWithSinglePossibleCandidatesInBlock(
+      const numbersWithSinglePossibleCandidates = this.getAllNumbersWithSinglePossibleCandidateInArray(
         y,
         rowIndex
       );
 
-      return this.getUpdatedBlockArrayWithAllFoundSinglePossibleCandidateInField(
+      return this.getUpdatedArrayWithAllFoundSinglePossibleCandidateInField(
         y,
         numbersWithSinglePossibleCandidates
       );
     });
   };
 
-  getUpdatedBlockArrayWithAllFoundSinglePossibleCandidateInField = (
-    block,
+  getUpdatedArrayWithAllFoundSinglePossibleCandidateInField = (
+    array,
     numbersWithSinglePossibleCandidates
   ) => {
-    return block.map(candidatesOfField => {
+    return array.map(candidatesOfField => {
       const foundNumberWithSinglePossibleCandidate = this.getNumberWithSinglePossibleCandidateInField(
         candidatesOfField,
         numbersWithSinglePossibleCandidates
@@ -102,13 +97,13 @@ class CrossHatching {
     });
   };
 
-  getNumbersWithSinglePossibleCandidatesInBlock = (block, rowIndex) => {
+  getAllNumbersWithSinglePossibleCandidateInArray = (array, rowIndex) => {
     let numbersWithSinglePossibleCandidates = [];
     const fixedNumbers = this.getAllFixedNumbersOfArray(rowIndex);
 
     for (let number = 1; number <= 9; number++) {
       let singleNumberCounter = 0;
-      block.forEach(candidatesOfField => {
+      array.forEach(candidatesOfField => {
         if (
           !this.isFixedField(candidatesOfField) &&
           candidatesOfField.includes(number)
@@ -124,35 +119,11 @@ class CrossHatching {
     return numbersWithSinglePossibleCandidates;
   };
 
-  checkRow = y => {
-    let fixedNumbers = this.getAllFixedNumbersOfArray(y);
-
-    this.sudokuBoard[y] = this.sudokuBoard[y].map(x => {
-      if (this.isFixedField(x)) return x;
-      const newPossibleNumbersForField = this.scratchAllFixedNumbersFromField(
-        x,
-        fixedNumbers
-      );
-      return newPossibleNumbersForField;
-    });
-  };
-
   getAllFixedNumbersOfArray = y => {
     const fixedFields = this.sudokuBoard[y].filter(x => this.isFixedField(x));
     const fixedNumbers = fixedFields.map(field => field[0]);
 
     return fixedNumbers;
-  };
-
-  scratchAllFixedNumbersFromField = (field, fixedNumbers) => {
-    return field.filter(possibleNumberOfField => {
-      if (fixedNumbers.includes(possibleNumberOfField)) {
-        this.hasNewCandidateFound = true;
-        return false;
-      } else {
-        return true;
-      }
-    });
   };
 
   isFixedField = field => {
