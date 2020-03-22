@@ -1,4 +1,5 @@
 import BoardPositions from "./BoardPositions";
+import CrossHatching from "./CrossHatching";
 
 class RangeChecking {
   constructor() {
@@ -11,14 +12,40 @@ class RangeChecking {
   // anywhere else in the same row/column
   solve = sudokuBoard => {
     console.log("----- Level 2: RangeChecking ----");
-
     this.sudokuBoard = sudokuBoard;
-    this.checkBlocksForCandidateInCommonColumnOrRow();
+
+    let counter = 0;
+
+    do {
+      counter++;
+      console.log(
+        "----------------ROUND " + counter + " RangeChecking -----------------"
+      );
+      this.hasNewCandidateFound = false;
+      CrossHatching.solve(this.sudokuBoard);
+      this.checkRows();
+      this.checkColumns();
+    } while (this.hasNewCandidateFound);
 
     return this.sudokuBoard;
   };
 
-  checkBlocksForCandidateInCommonColumnOrRow = () => {
+  checkRows = () => {
+    this.checkBlocksForCandidateInCommonColumnOrRow("row");
+  };
+  checkColumns = () => {
+    this.sudokuBoard = BoardPositions.switchRowToColumnOfBoard(
+      this.sudokuBoard
+    );
+
+    this.checkBlocksForCandidateInCommonColumnOrRow("column");
+
+    this.sudokuBoard = BoardPositions.switchRowToColumnOfBoard(
+      this.sudokuBoard
+    );
+  };
+
+  checkBlocksForCandidateInCommonColumnOrRow = checkColum => {
     const sudokuBoardBlockArrays = BoardPositions.switchBoardToBlockArrays(
       this.sudokuBoard
     );
@@ -31,52 +58,106 @@ class RangeChecking {
         sudokuBoardBlockArrays,
         blockNumber
       );
+
       rowsWithEqualCandidates.push(rowWithEqualCandidates);
     }
-    console.log(rowsWithEqualCandidates, "rowWithEqualCandidates");
-    return;
-    rowsWithEqualCandidates.forEach(rowOfCandidates => {
+
+    console.log(rowsWithEqualCandidates, "rowsWithEqualCandidates");
+    rowsWithEqualCandidates.forEach((rowOfCandidates, blockNumber) => {
       rowOfCandidates.forEach(rowOfCandidate => {
-        this.scratchCandidatesOffRow(rowOfCandidate.row, rowOfCandidate.value);
+        this.scratchCandidatesOffRow(
+          rowOfCandidate.row,
+          rowOfCandidate.value,
+          blockNumber,
+          checkColum
+        );
       });
     });
 
     //same logic for columns
   };
 
-  checkBlockForCandidateInCommonRow = (sudokuBoardBlockArrays, blockNumber) => {
+  checkBlockForCandidateInCommonRow = (
+    sudokuBoardBlockArrays,
+    blockNumber,
+    checkColumn
+  ) => {
     const positionsOfEqualCandidates = this.findPositionsOfEqualNumbersInArray(
       sudokuBoardBlockArrays[blockNumber]
     ); //gets the positions (index) and the value of the equal candidate
-
     const rowsWithEqualCandidates = this.getPositionOfEqualNumbersOnlyFoundInSameRow(
       positionsOfEqualCandidates
     );
-    console.log(rowsWithEqualCandidates, "rowsWithEqualCandidates");
 
     const translatedRowsWithEqualCandidates = this.translateRowsByBlockNumber(
       blockNumber,
-      rowsWithEqualCandidates
+      rowsWithEqualCandidates,
+      checkColumn
     ); //depending on the blocknumber, the row will be different
 
     return translatedRowsWithEqualCandidates;
   };
 
-  translateRowsByBlockNumber = (blockNumber, rowsWithEqualCandidates) => {
+  translateRowsByBlockNumber = (
+    blockNumber,
+    rowsWithEqualCandidates,
+    checkColumn
+  ) => {
+    if (checkColumn)
+      return this.translateRowsByBlockNumberCheckColum(
+        blockNumber,
+        rowsWithEqualCandidates
+      );
+    else
+      return this.translateRowsByBlockNumberCheckRow(
+        blockNumber,
+        rowsWithEqualCandidates
+      );
+  };
+
+  translateRowsByBlockNumberCheckRow = (
+    blockNumber,
+    rowsWithEqualCandidates
+  ) => {
     const translatedRows = rowsWithEqualCandidates.map(row => {
       switch (blockNumber) {
         case 0:
         case 1:
         case 2:
-          return row;
+          return { ...row, blockNumber };
         case 3:
         case 4:
         case 5:
-          return { row: row.row + 3, value: row.value };
+          return { row: row.row + 3, value: row.value, blockNumber };
         case 6:
         case 7:
         case 8:
-          return { row: row.row + 6, value: row.value };
+          return { row: row.row + 6, value: row.value, blockNumber };
+        default:
+          throw new Error("can't translate row index of block out of range");
+      }
+    });
+    return translatedRows;
+  };
+
+  translateRowsByBlockNumberCheckColumn = (
+    blockNumber,
+    rowsWithEqualCandidates
+  ) => {
+    const translatedRows = rowsWithEqualCandidates.map(row => {
+      switch (blockNumber) {
+        case 0:
+        case 3:
+        case 6:
+          return { ...row, blockNumber };
+        case 1:
+        case 4:
+        case 7:
+          return { row: row.row + 3, value: row.value, blockNumber };
+        case 2:
+        case 5:
+        case 8:
+          return { row: row.row + 6, value: row.value, blockNumber };
         default:
           throw new Error("can't translate row index of block out of range");
       }
@@ -112,7 +193,7 @@ class RangeChecking {
     let rowsWithEqualCandidates = []; // format: [{row: xy, value: z}]
 
     positionsOfEqualCandidates.forEach(positionOfEqualCandidate => {
-      const rowWithEqualCandidate = this.findEqualCandidatesOnlyInEqualRow(
+      const rowWithEqualCandidate = this.findEqualCandidatesInBlockOnlyInEqualRow(
         positionOfEqualCandidate
       );
       if (rowWithEqualCandidate)
@@ -122,7 +203,7 @@ class RangeChecking {
     return rowsWithEqualCandidates;
   };
 
-  findEqualCandidatesOnlyInEqualRow = positionOfEqualCandidate => {
+  findEqualCandidatesInBlockOnlyInEqualRow = positionOfEqualCandidate => {
     const validRows = [
       [0, 1, 2],
       [3, 4, 5],
@@ -151,24 +232,119 @@ class RangeChecking {
     };
   };
 
-  scratchCandidatesOffRow = (row, valueToScratchOff) => {
-    console.log(row, valueToScratchOff, "row, value");
+  scratchCandidatesOffRow = (
+    row,
+    valueToScratchOff,
+    blockNumber,
+    checkColum
+  ) => {
     this.sudokuBoard = this.sudokuBoard.map((rowOfBoard, rowIndex) => {
-      let x = rowOfBoard.filter(candidates => {
+      if (rowIndex !== row) return rowOfBoard;
+
+      let x = rowOfBoard.map((candidates, column) => {
         let y = candidates.filter(candidate => {
-          console.log(candidate, "candidate");
-          if (rowIndex === row && candidate === valueToScratchOff) {
+          if (
+            candidate === valueToScratchOff &&
+            !this.isBlockWhereValueToScratchOffWasFound(
+              row,
+              column,
+              blockNumber,
+              checkColum
+            )
+          ) {
             console.log("scratched OFF triggered");
+            this.hasNewCandidateFound = true;
             return false;
           } else return true;
         });
-        console.log(y, "y");
-        console.log(rowIndex, "rowIndex");
         return y;
       });
-      console.log(x, "x");
       return x;
     });
+  };
+
+  // check if the original value was found in the given block - if so, don't scratch off that value,
+  // as this is the block where the values have to eventually be in
+  isBlockWhereValueToScratchOffWasFound = (
+    row,
+    column,
+    blockNumber,
+    checkColum
+  ) => {
+    if (checkColum)
+      return this.isBlockWhereValueToScratchOffWasFoundColumnCheck(
+        row,
+        column,
+        blockNumber
+      );
+    else
+      return this.isBlockWhereValueToScratchOffWasFoundRowCheck(
+        row,
+        column,
+        blockNumber
+      );
+  };
+
+  isBlockWhereValueToScratchOffWasFoundColumnCheck = (
+    row,
+    column,
+    blockNumber
+  ) => {
+    switch (blockNumber) {
+      case 0:
+        return row < 3 && column < 3;
+      case 1:
+        return row < 3 && column >= 3 && column < 6;
+      case 2:
+        return row < 3 && column >= 6 && column < 9;
+
+      case 3:
+        return row >= 3 && row < 6 && column < 3;
+      case 4:
+        return row >= 3 && row < 6 && column >= 3 && column < 6;
+      case 5:
+        return row >= 3 && row < 6 && column >= 6 && column < 9;
+
+      case 6:
+        return row >= 6 && row < 9 && column < 3;
+      case 7:
+        return row >= 6 && row < 9 && column >= 3 && column < 6;
+      case 8:
+        return row >= 6 && row < 9 && column >= 6 && column < 9;
+      default:
+        return true;
+    }
+  };
+
+  isBlockWhereValueToScratchOffWasFoundRowCheck = (
+    row,
+    column,
+    blockNumber
+  ) => {
+    switch (blockNumber) {
+      case 0:
+        return row < 3 && column < 3;
+      case 1:
+        return row >= 3 && row < 6 && column < 3;
+      case 2:
+        return row >= 6 && row < 9 && column < 3;
+
+      case 3:
+        return row < 3 && column >= 3 && column < 6;
+      case 4:
+        return row >= 3 && row < 6 && column >= 3 && column < 6;
+      case 5:
+        return row >= 6 && row < 9 && column >= 3 && column < 6;
+
+      case 6:
+        return row < 3 && column >= 6 && column < 9;
+      case 7:
+        return row >= 3 && row < 6 && column >= 6 && column < 9;
+      case 8:
+        return row >= 6 && row < 9 && column >= 6 && column < 9;
+      default:
+        return true;
+    }
   };
 
   isFixedField = field => {

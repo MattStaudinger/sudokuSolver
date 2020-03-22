@@ -5,6 +5,7 @@ import RangeChecking from "./RangeChecking";
 class Solver {
   constructor() {
     this.sudokuBoard = null;
+    this.hasNewCandidateFound = false;
   }
 
   // each field has 9 possible numbers. The sudoku will be solved by 'scratching' off
@@ -21,10 +22,24 @@ class Solver {
     // there are mutliple steps (depending on the difficulty of a sudoku) to solve a sudoku. Starting from the easiest method to the more advanced.
     // All methods are explained here: https://www.stolaf.edu/people/hansonr/sudoku/explain.htm
 
+    // let counter = 0;
+
+    // do {
+    //   counter++;
+    //   console.log(
+    //     "----------------ROUND " + counter + " crossHatching -----------------"
+    //   );
+    //   this.hasNewCandidateFound = false;
+    //   this.sudokuBoard = ScratchOffCheck.solve(this.sudokuBoard);
+    //   this.checkRows();
+    //   this.checkColumns();
+    //   this.checkBlocks();
+    // } while (this.hasNewCandidateFound);
+
     this.sudokuBoard = CrossHatching.solve(this.sudokuBoard);
     console.log(this.sudokuBoard, "sudokuBoard after cross-hatching");
 
-    // this.sudokuBoard = RangeChecking.solve(this.sudokuBoard);
+    this.sudokuBoard = RangeChecking.solve(this.sudokuBoard);
 
     console.log(this.sudokuBoard, "solvedBoard with possible numbers");
     const sudokuSolved = this.translateSudokuWithAllPossibleNumbersBackToNormalArray();
