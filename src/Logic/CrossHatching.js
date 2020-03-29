@@ -13,6 +13,7 @@ class CrossHatching {
     console.log("----- Level 1: crossHatching ----");
     this.sudokuBoard = sudokuBoard;
     let counter = 0;
+    let hasFoundAtLeastOneCandidate = false;
 
     do {
       counter++;
@@ -24,9 +25,14 @@ class CrossHatching {
       this.checkRows();
       this.checkColumns();
       this.checkBlocks();
+
+      if (this.hasNewCandidateFound) hasFoundAtLeastOneCandidate = true;
     } while (this.hasNewCandidateFound);
 
-    return this.sudokuBoard;
+    return {
+      sudokuBoard: this.sudokuBoard,
+      hasNewCandidateFound: hasFoundAtLeastOneCandidate
+    };
   };
 
   checkRows = () => {
@@ -64,14 +70,14 @@ class CrossHatching {
         rowIndex
       );
 
-      return this.getUpdatedArrayWithAllFoundSinglePossibleCandidateInField(
+      return this.getUpdatedArrayWithAllFoundSinglePossibleCandidatesInField(
         y,
         numbersWithSinglePossibleCandidates
       );
     });
   };
 
-  getUpdatedArrayWithAllFoundSinglePossibleCandidateInField = (
+  getUpdatedArrayWithAllFoundSinglePossibleCandidatesInField = (
     array,
     numbersWithSinglePossibleCandidates
   ) => {

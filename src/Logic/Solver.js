@@ -22,24 +22,27 @@ class Solver {
     // there are mutliple steps (depending on the difficulty of a sudoku) to solve a sudoku. Starting from the easiest method to the more advanced.
     // All methods are explained here: https://www.stolaf.edu/people/hansonr/sudoku/explain.htm
 
-    // let counter = 0;
+    let counter = 0;
 
-    // do {
-    //   counter++;
-    //   console.log(
-    //     "----------------ROUND " + counter + " crossHatching -----------------"
-    //   );
-    //   this.hasNewCandidateFound = false;
-    //   this.sudokuBoard = ScratchOffCheck.solve(this.sudokuBoard);
-    //   this.checkRows();
-    //   this.checkColumns();
-    //   this.checkBlocks();
-    // } while (this.hasNewCandidateFound);
+    do {
+      counter++;
+      console.log(
+        "----------------ROUND " + counter + " solving Sudoku -----------------"
+      );
+      this.hasNewCandidateFound = false;
+      let sudokuBoardResult = null;
+      sudokuBoardResult = CrossHatching.solve(this.sudokuBoard);
+      console.log(
+        sudokuBoardResult.sudokuBoard,
+        "sudokuBoard after cross-hatching"
+      );
 
-    this.sudokuBoard = CrossHatching.solve(this.sudokuBoard);
-    console.log(this.sudokuBoard, "sudokuBoard after cross-hatching");
+      if (sudokuBoardResult.hasNewCandidateFound)
+        sudokuBoardResult = RangeChecking.solve(sudokuBoardResult.sudokuBoard);
 
-    this.sudokuBoard = RangeChecking.solve(this.sudokuBoard);
+      this.sudokuBoard = sudokuBoardResult.sudokuBoard;
+      this.hasNewCandidateFound = sudokuBoardResult.hasNewCandidateFound;
+    } while (this.hasNewCandidateFound);
 
     console.log(this.sudokuBoard, "solvedBoard with possible numbers");
     const sudokuSolved = this.translateSudokuWithAllPossibleNumbersBackToNormalArray();
