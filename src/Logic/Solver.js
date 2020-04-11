@@ -12,7 +12,7 @@ class Solver {
   // all numbers that are not possible anymore due to the given numbers.
   // Each 'level' brings a higher degree of logic. The easiest suodkus will already be solved
   // at level 1
-  solve = sudokuBoard => {
+  solve = (sudokuBoard) => {
     console.log("called function solve with ", sudokuBoard);
     const sudokuBoardWithAllPossibleNumbers = this.generateAllPossibleNumbersForFields(
       sudokuBoard
@@ -32,10 +32,6 @@ class Solver {
       this.hasNewCandidateFound = false;
       let sudokuBoardResult = null;
       sudokuBoardResult = CrossHatching.solve(this.sudokuBoard);
-      console.log(
-        sudokuBoardResult.sudokuBoard,
-        "sudokuBoard after cross-hatching"
-      );
 
       if (sudokuBoardResult.hasNewCandidateFound)
         sudokuBoardResult = RangeChecking.solve(sudokuBoardResult.sudokuBoard);
@@ -54,7 +50,7 @@ class Solver {
     return { sudokuSolved, statisticsOfSolving };
   };
 
-  generateAllPossibleNumbersForFields = sudokuBoard => {
+  generateAllPossibleNumbersForFields = (sudokuBoard) => {
     // if number in field is already in use, then don't add any
     // other possibilities to it, else add all numbers
     for (let y = 0; y < 9; y++) {
@@ -80,7 +76,7 @@ class Solver {
     return newSudokuBoard;
   };
 
-  isFixedField = field => {
+  isFixedField = (field) => {
     return field.length === 1;
   };
 }

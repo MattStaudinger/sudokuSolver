@@ -8,9 +8,8 @@ class ScratchOffCheck {
 
   //crossHatching: check for rows, columns and blocks and scratch out all options of each field
   // that aren't possible - referred to as "cross-hatching"
-  solve = sudokuBoard => {
+  solve = (sudokuBoard) => {
     this.sudokuBoard = sudokuBoard;
-    console.log(sudokuBoard, "sudokuBoard");
     let counter = 0;
     do {
       counter++;
@@ -60,10 +59,10 @@ class ScratchOffCheck {
     );
   };
 
-  checkRow = y => {
+  checkRow = (y) => {
     let fixedNumbers = this.getAllFixedNumbersOfArray(y);
 
-    this.sudokuBoard[y] = this.sudokuBoard[y].map(x => {
+    this.sudokuBoard[y] = this.sudokuBoard[y].map((x) => {
       if (this.isFixedField(x)) return x;
       const newPossibleNumbersForField = this.scratchAllFixedNumbersFromField(
         x,
@@ -73,15 +72,15 @@ class ScratchOffCheck {
     });
   };
 
-  getAllFixedNumbersOfArray = y => {
-    const fixedFields = this.sudokuBoard[y].filter(x => this.isFixedField(x));
-    const fixedNumbers = fixedFields.map(field => field[0]);
+  getAllFixedNumbersOfArray = (y) => {
+    const fixedFields = this.sudokuBoard[y].filter((x) => this.isFixedField(x));
+    const fixedNumbers = fixedFields.map((field) => field[0]);
 
     return fixedNumbers;
   };
 
   scratchAllFixedNumbersFromField = (field, fixedNumbers) => {
-    return field.filter(possibleNumberOfField => {
+    return field.filter((possibleNumberOfField) => {
       if (fixedNumbers.includes(possibleNumberOfField)) {
         this.hasNewCandidateFound = true;
         return false;
@@ -91,7 +90,7 @@ class ScratchOffCheck {
     });
   };
 
-  isFixedField = field => {
+  isFixedField = (field) => {
     return field.length === 1;
   };
 }
