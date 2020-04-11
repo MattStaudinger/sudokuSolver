@@ -1,4 +1,4 @@
-A simple Sudoku-solver for simple and advanced puzzles. It uses the Cross-Hatch and Range-Checking methods described here:
+A simple Sudoku-solver for easy and advanced puzzles. It uses the Cross-Hatch and Range-Checking methods described here:
 https://www.stolaf.edu/people/hansonr/sudoku/explain.htm
 
 Live-version:
