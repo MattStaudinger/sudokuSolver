@@ -74,7 +74,7 @@ class Sudoku extends Component {
   };
 
   componentDidMount() {
-    this.updateSudokuBoard(SudokuPresets.hard1);
+    this.updateSudokuBoard(SudokuPresets.reset);
   }
 
   solveSodoku = () => {
