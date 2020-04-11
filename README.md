@@ -1,3 +1,10 @@
+A simple Sudoku-solver for simple and advanced puzzles. It uses the Cross-Hatch and Range-Checking methods described here:
+https://www.stolaf.edu/people/hansonr/sudoku/explain.htm
+
+Live-version:
+https://mattstaudinger.github.io/sudokuSolver/
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
